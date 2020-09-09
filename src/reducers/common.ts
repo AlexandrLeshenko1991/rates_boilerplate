@@ -2,25 +2,34 @@ import { AnyAction } from 'redux'
 import {
   START_FETCHING,
   STOP_FETCHING,
+  SET_CHART_SERIES
 } from 'actions/common'
 
 const initState = {
-  fetching: false,
+  fetching: true,
+  chartSeries: []
 }
 
 export interface ICommonState {
-  fetching: boolean
+  fetching: boolean,
+  chartSeries?: string[]
 }
 
 function commonReducer(state: ICommonState = initState, { type, payload = null }: AnyAction) {
   switch (type) {
     case START_FETCHING: {
-      return {
+      return {...state,
         fetching: true,
       }
     }
     case STOP_FETCHING: {
-      return {
+      return {...state,
+        fetching: false,
+      }
+    }
+    case SET_CHART_SERIES: {
+      return {...state,
+        chartSeries: payload,
         fetching: false,
       }
     }
@@ -28,5 +37,7 @@ function commonReducer(state: ICommonState = initState, { type, payload = null }
       return state
   }
 }
+
+
 
 export default commonReducer
