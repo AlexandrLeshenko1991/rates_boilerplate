@@ -1,54 +1,101 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import Chart from "react-apexcharts";
 import { TReduxProps } from './Container'
 import { StyledContainer } from './style'
-import { useDispatch, useSelector } from 'react-redux'
-import { IAppState } from 'src/store/models'
 import Loader from 'components/Loader/Loader'
-import { START_FETCHING, getChartSeries, startFetching, stopFetching } from 'actions/common'
+import { Select } from 'antd';
+import ErrorRequestMessage from './ErrorRequestMessage/ErrorRequestMessage';
 
 export type TComponentProps = {
 } & TReduxProps
 
-const Rates: React.FC<TComponentProps> = () => {
-  const dispatch = useDispatch();
-  const fetching = useSelector((state: IAppState) => state.common.fetching);
+type curencyArrayType = {
+  Cur_ID:number  
+  Cur_Abbreviation: string
+}
+
+const Rates: React.FC<TComponentProps> = (props) => {
+  const curencyIdStart = 145;
+  const { Option } = Select;
+
+  const curencyArray: curencyArrayType[] = [
+    {Cur_ID:145,  Cur_Abbreviation: 'USD'},
+    {Cur_ID:298,  Cur_Abbreviation: 'RUR'},
+    {Cur_ID:292,  Cur_Abbreviation: 'EUR'},
+  ]
+  
 
   const chartOptions = {
     chart: {
       id: "basic-bar"
     },
     xaxis: {
-      categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998]
+      categories: props.chartSeries.map(data=> data.Date)
     }
   }
 
   const chartSeries = [
     {
-      name: "series-1",
-      data: [30, 40, 45, 50, 49, 60, 70, 91]
+      name: "rates",
+      data: props.chartSeries.map(data=>data.Cur_OfficialRate)
     }
   ]
+
+  const changeHandlerCurrency = (e)=> {
+    props.dispatch(props.setCurrency(e))
+  }
+  
+  const changeHandlerPeriod = (e)=> {
+    props.dispatch(props.setPerriod(e))
+  }
+
   const type = 'line'
 
+  async function startDataFunction() {
+    props.dispatch(props.startFetching())
+    await props.dispatch(await props.getChartSeries(props.chartSelectedCurency, props.chartSelectedPeriod))
+    props.dispatch(props.stopFetching())
+  }
+
   useEffect(() => {
-    dispatch(getChartSeries(145))
+    startDataFunction();
   }, []);
+
+  useEffect(() => {
+      startDataFunction();
+  }, [props.chartSelectedCurency, props.chartSelectedPeriod]);
 
 
   return (
     <StyledContainer>
-      {fetching ? <Loader /> : <>
-            {
-                <Chart
-                options={chartOptions}
-                series={chartSeries}
-                type="line"
-                width="500"
-              />
-            }
-        </>
-      }
+      {props.fetching ? <Loader /> : ''}
+      {props.errorRequest ? <ErrorRequestMessage /> 
+      :<>
+      <>
+        <Chart
+        options={chartOptions}
+        series={chartSeries}
+        type = {type}
+        width='900'
+        />    
+      </>
+      <div style={{ display: 'flex' }}>
+        <div>
+          curency:<br/> 
+          <Select style={{ width: 120 }} value={props.chartSelectedCurency} onChange={changeHandlerCurrency}>
+            {curencyArray.map(item =><Option key={item.Cur_ID} value={item.Cur_ID}>{item.Cur_Abbreviation}</Option> )}
+          </Select>
+        </div>
+        <div style={{ marginLeft: '20px' }}>
+          period:<br/> 
+          <Select style={{ width: 120 }} value={props.chartSelectedPeriod} onChange={changeHandlerPeriod}>
+            <Option key={1} value={"month"}>per month</Option>
+            <Option key={2} value={"year"}>in 365 days</Option>
+          </Select>
+        </div>
+      </div>
+      </>
+    }
     </StyledContainer>
   )
 }

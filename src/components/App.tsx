@@ -3,6 +3,7 @@ import { ConnectedRouter } from 'connected-react-router'
 import routeHistory from 'route-history'
 import { Switch, Route } from 'react-router-dom'
 import { Layout } from 'antd'
+import "antd/dist/antd.css";
 import styled from 'styled-components'
 
 import NotFound from './NotFound'
@@ -14,7 +15,7 @@ const { Content } = Layout
 function App() {
   return (
     <ConnectedRouter history={routeHistory}>
-      <Layout style={{ minHeight: '100%' }}>
+      <Layout style={{ minHeight: '100vh' }}>
         <Header>Rates</Header>
         <Layout>
           <Content>

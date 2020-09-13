@@ -1,5 +1,6 @@
 import React from 'react'
 import { StyledContainer } from './style'
+import Spin from 'antd/lib/spin'
 
 export type TComponentProps = {
 }
@@ -7,7 +8,7 @@ export type TComponentProps = {
 const Loader: React.FC<TComponentProps> = () => {
   return (
     <StyledContainer>
-       <div> LOAD... </div>
+      <Spin tip="Loading..." size="large"/>
     </StyledContainer>
   )
 }
