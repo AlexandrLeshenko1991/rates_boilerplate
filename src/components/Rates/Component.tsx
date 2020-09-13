@@ -15,7 +15,6 @@ type curencyArrayType = {
 }
 
 const Rates: React.FC<TComponentProps> = (props) => {
-  const curencyIdStart = 145;
   const { Option } = Select;
 
   const curencyArray: curencyArrayType[] = [
@@ -49,8 +48,6 @@ const Rates: React.FC<TComponentProps> = (props) => {
     props.dispatch(props.setPerriod(e))
   }
 
-  const type = 'line'
-
   async function startDataFunction() {
     props.dispatch(props.startFetching())
     await props.dispatch(await props.getChartSeries(props.chartSelectedCurency, props.chartSelectedPeriod))
@@ -75,7 +72,7 @@ const Rates: React.FC<TComponentProps> = (props) => {
         <Chart
         options={chartOptions}
         series={chartSeries}
-        type = {type}
+        type = "line"
         width='900'
         />    
       </>
