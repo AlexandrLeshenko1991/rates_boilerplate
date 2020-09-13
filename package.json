@@ -19,7 +19,7 @@
     "@types/react-test-renderer": "~16.9.2",
     "@types/redux": "~3.6.0",
     "@types/redux-logger": "~3.0.7",
-    "antd": "^4.6.2",
+    "antd": "^4.6.4",
     "apexcharts": "^3.20.0",
     "connected-react-router": "~6.8.0",
     "history": "~4.10.1",
